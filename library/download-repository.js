@@ -16,13 +16,17 @@ function downloadRepository(client, id, ctx) {
 				});
 		})
 		.then(repo => {
+			if (!ctx.user) {
+				throw new Error(`downloadRepository: ctx.user is required`);
+			}
 			return client.get(`/users/${ctx.user}`)
 				.then(user => {
 					return {repo, user: user.data};
 				});
 		})
 		.then(result => {
-			const saveData = {
+			const publicData = {
+				userId: result.user.id,
 				username: result.user.username,
 				userUrl: result.user.web_url,
 				branch: result.repo.data.branch.name,
@@ -30,6 +34,7 @@ function downloadRepository(client, id, ctx) {
 				message: result.repo.data.branch.commit.message,
 				mtime: new Date()
 			};
+
 			const pathWithNamespace = result.repo.data.path_with_namespace;
 			const targetBase = path.resolve(ctx.pagesDir, pathWithNamespace);
 			const jsonPath = `${targetBase}.json`;
@@ -38,7 +43,7 @@ function downloadRepository(client, id, ctx) {
 				.then(() => {
 					return sander.mkdir(targetBase)
 						.then(() => {
-							return sander.writeFile(jsonPath, JSON.stringify(saveData, null, '  '));
+							return sander.writeFile(jsonPath, JSON.stringify(publicData, null, '  '));
 						});
 				});
 		});
@@ -49,6 +54,7 @@ function download(client, id, targetBase) {
 		const stream = client.stream(`/projects/${id}/repository/archive`);
 		const target = targz().createParseStream();
 		const jobs = [];
+		let exiting = false;
 
 		target.on('entry', entry => {
 			const fragments = path.normalize(entry.path)
@@ -57,25 +63,31 @@ function download(client, id, targetBase) {
 				.slice(1);
 
 			if (entry.type === 'File' && fragments[0] === 'docs') {
-				const entryPath = path.resolve(targetBase, fragments.slice(1).join(path.sep));
+				const relativePath = fragments.slice(1).join(path.sep);
+				const entryPath = path.resolve(targetBase, relativePath);
 				const target = createWriteStream(entryPath);
-				const job = new Promise((resolve, reject) => {
-					target.on('error', reject);
-					target.on('finish', () => resolve(entryPath));
-				});
-				jobs.push(job);
-				entry.pipe(target);
+
+				jobs.push(new Promise((resolve, reject) => {
+					entry.pipe(target)
+						.on('close', resolve)
+						.on('error', reject);
+				}));
 			}
+
 			const sorted = ['docs', fragments[0] || 'docs'].sort();
 			if (sorted[1] !== 'docs') {
-				resolve(Promise.all(jobs));
+				if (!exiting) {
+					exiting = true;
+					resolve(Promise.all(jobs));
+				}
 			}
 		});
 
 		target.on('error', reject);
 		target.on('end', () => {
-			if (!jobs.length) {
-				resolve([]);
+			if (!exiting) {
+				exiting = true;
+				resolve(Promise.all(jobs));
 			}
 		});
 		stream.on('error', reject);

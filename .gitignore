@@ -1,4 +1,6 @@
+.db
 .env
+.stage
 node_modules
 npm-*.log
 marionebl-gitlab-pages-*.tgz

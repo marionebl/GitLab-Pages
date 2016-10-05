@@ -3,16 +3,13 @@ const GitLabStrategy = require('passport-gitlab2').Strategy;
 
 module.exports = createClient;
 
-function createClient(options) {
-	const strategy = createStrategy(options);
+function createClient(options, db) {
+	const strategy = createStrategy(options, db);
 	return passport.use(strategy);
 }
 
-function createStrategy(options) {
-	const strategy = new GitLabStrategy(options,
-	(accessToken, refreshToken, profile, cb) => {
-		cb(null, {accessToken, refreshToken, profile});
-	});
+function createStrategy(options, db) {
+	const strategy = new GitLabStrategy(options, onSuccess(db));
 
 	strategy.authorizationParams = options => {
 		return {
@@ -21,4 +18,20 @@ function createStrategy(options) {
 	};
 
 	return strategy;
+}
+
+function onSuccess(db) {
+	return (accessToken, refreshToken, profile, cb) => {
+		const id = profile.id;
+		const data = {
+			id: profile.id,
+			privateToken: profile._json.private_token
+		};
+		db.put(id, data, err => {
+			if (err) {
+				return cb(err);
+			}
+			cb(null, {accessToken, refreshToken, profile});
+		});
+	};
 }

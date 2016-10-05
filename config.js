@@ -11,9 +11,7 @@ const required = [
 	['sshPublicKey', 'SSH_PUBLIC_KEY'],
 	['sshPrivateKey', 'SSH_PRIVATE_KEY'],
 	['clientId', 'CLIENT_ID'],
-	['clientSecret', 'CLIENT_SECRET'],
-	['sslCert', 'SSL_CERT'],
-	['sslKey', 'SSL_KEY']
+	['clientSecret', 'CLIENT_SECRET']
 ];
 
 const config = {

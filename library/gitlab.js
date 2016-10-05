@@ -9,10 +9,16 @@ module.exports = gitlab;
 function gitlab(base) {
 	assert(_.isString(base) && base, 'gitlab <base> url must be string');
 
-	return token => {
+	return (token, options) => {
 		assert(_.isString(token) && token, 'gitlab <token> must be string');
 
-		const opts = {
+		const opts = options && options.private ?
+		{
+			headers: {
+				'PRIVATE-TOKEN': token
+			}
+		} :
+		{
 			headers: {
 				Authorization: `Bearer ${token}`
 			}
@@ -50,7 +56,8 @@ function gitlab(base) {
 							return reject(error);
 						}
 						if (res.statusCode >= 400) {
-							return reject(new Error(data ? data.message : res.statusText));
+							const message = (data ? data.error || data.message : res.statusText) || res.body;
+							return reject(new Error(`${uri}: ${message}`));
 						}
 
 						const pagination = res.headers['x-page'] ? {

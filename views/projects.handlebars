@@ -8,14 +8,25 @@
 			<li class="list-group-item">
 				<details>
 					<summary>
-						<a href="/pages/{{pathWithNamespace}}" target="_blank" rel="noreferrer nofollow" title="Open page for {{pathWithNamespace}}">
-							{{#if avatarUrl}}
-								<img width="50" height="50" src="{{avatarUrl}}" alt="Avatar for project {{pathWithNamespace}}"/>
-							{{else}}
-								<div class="avatar-fallback"></div>
-							{{/if}}
-							{{pathWithNamespace}}
-						</a>
+						{{#if enabled}}
+							<a href="/pages/{{pathWithNamespace}}" target="_blank" rel="noreferrer nofollow" title="Open page for {{pathWithNamespace}}">
+								{{#if avatarUrl}}
+									<img width="50" height="50" src="{{avatarUrl}}" alt="Avatar for project {{pathWithNamespace}}"/>
+								{{else}}
+									<div class="avatar-fallback"></div>
+								{{/if}}
+								{{pathWithNamespace}}
+							</a>
+						{{else}}
+							<div>
+								{{#if avatarUrl}}
+									<img width="50" height="50" src="{{avatarUrl}}" alt="Avatar for project {{pathWithNamespace}}"/>
+								{{else}}
+									<div class="avatar-fallback"></div>
+								{{/if}}
+								{{pathWithNamespace}}
+							</div>
+						{{/if}}
 						{{#if time}}
 							<div>
 								<svg class="i"><use xlink:href="#i-activity"/></svg>

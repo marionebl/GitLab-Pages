@@ -1,9 +1,9 @@
 #!/usr/bin/env node
 
-var http = require('http');
-var https = require('https');
-var config = require('./config');
-var app = require('./app');
+const http = require('http');
+const https = require('https');
+const config = require('./config');
+const app = require('./app');
 
 /**
  * Get port from environment and store in Express.

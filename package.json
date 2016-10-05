@@ -9,6 +9,7 @@
     "lint": "xo",
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i bootstrap -i jade",
     "start": "./cli.js",
+    "tunnel": "lt --p 3000 --s glpages -h https://localtunnel.me",
     "test": "npm run lint && npm run deps"
   },
   "repository": {
@@ -35,6 +36,7 @@
     "express-session": "^1.11.3",
     "fstream": "^1.0.10",
     "jade": "~1.11.0",
+    "level": "^1.4.0",
     "lodash": "^3.9.3",
     "morgan": "~1.6.0",
     "normalize-url": "^1.6.1",
@@ -43,10 +45,12 @@
     "path-exists": "^3.0.0",
     "request": "^2.75.0",
     "sander": "^0.5.1",
-    "tar.gz": "^1.0.5"
+    "tar.gz": "^1.0.5",
+    "throat": "^3.0.0"
   },
   "devDependencies": {
     "dependency-check": "^2.6.0",
+    "localtunnel": "^1.8.1",
     "md5": "^2.2.1",
     "xo": "^0.16.0"
   }
