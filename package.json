@@ -45,8 +45,7 @@
     "path-exists": "^3.0.0",
     "request": "^2.75.0",
     "sander": "^0.5.1",
-    "tar.gz": "^1.0.5",
-    "throat": "^3.0.0"
+    "tar.gz": "^1.0.5"
   },
   "devDependencies": {
     "dependency-check": "^2.6.0",

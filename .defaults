@@ -3,6 +3,6 @@ DEPLOY_BRANCH=gl-pages
 # CLIENT_ID=
 # CLIENT_SECRET=
 PUBLIC_URL=https://glpages.localtunnel.me/
-# SECRET=d47kR7rAsq8saNmWcsknNMUAQh.QkNy9PWLhrGGQcJhF2WnHFu
+# SECRET=
 # SSL_KEY=
 # SSL_CERT=

@@ -22,9 +22,6 @@ const config = {
 if (process.env.GITLAB_URL) {
 	config.url = process.env.GITLAB_URL;
 }
-if (process.env.DEPLOY_BRANCH) {
-	config.deployBranch = process.env.DEPLOY_BRANCH;
-}
 if (process.env.PUBLIC_PAGES_DIR) {
 	config.publicPagesDir = process.env.PUBLIC_PAGES_DIR;
 }
