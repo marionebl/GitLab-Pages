@@ -1,44 +1,53 @@
 {
-  "name": "GitLab-Pages",
-  "version": "0.1.0",
-  "description": "GitHub Pages, for GitLab. ",
-  "main": "index.js",
-  "private": true,
+  "name": "@marionebl/gitlab-pages",
+  "version": "1.0.0",
+  "description": "GitHub Pages, for GitLab.",
+  "bin": {
+    "gitlab-pages": "./cli.js"
+  },
   "scripts": {
-    "start": "node ./bin/www",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "xo",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev -i bootstrap -i jade",
+    "start": "./cli.js",
+    "test": "npm run lint && npm run deps"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/Glavin001/GitLab-Pages.git"
+    "url": "https://github.com/marionebl/gitlab-pages.git"
   },
   "keywords": [
     "gitlab",
     "pages"
   ],
-  "author": "Glavin Wiechert",
+  "author": "Mario Nebl",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Glavin001/GitLab-Pages/issues"
+    "url": "https://github.com/marionebl/gitlab-pages/issues"
   },
-  "homepage": "https://github.com/Glavin001/GitLab-Pages",
+  "homepage": "https://github.com/marionebl/gitlab-pages",
   "dependencies": {
-    "async": "^1.2.1",
-    "body-parser": "~1.13.0",
+    "body-parser": "^1.13.3",
     "bootstrap": "^3.3.2",
     "cookie-parser": "~1.3.5",
-    "debug": "~2.2.0",
+    "dotenv": "^2.0.0",
     "express": "~4.12.4",
     "express-handlebars": "^2.0.1",
     "express-session": "^1.11.3",
-    "gitlab": "^1.3.0",
+    "fstream": "^1.0.10",
     "jade": "~1.11.0",
     "lodash": "^3.9.3",
     "morgan": "~1.6.0",
-    "mv": "^2.0.3",
-    "nodegit": "^0.12.0",
-    "rimraf": "^2.4.0",
-    "serve-favicon": "~2.3.0",
-    "serve-index": "^1.6.4"
+    "normalize-url": "^1.6.1",
+    "passport": "^0.3.2",
+    "passport-gitlab2": "^2.2.0",
+    "path-exists": "^3.0.0",
+    "request": "^2.75.0",
+    "sander": "^0.5.1",
+    "tar.gz": "^1.0.5"
+  },
+  "devDependencies": {
+    "dependency-check": "^2.6.0",
+    "md5": "^2.2.1",
+    "xo": "^0.16.0"
   }
 }

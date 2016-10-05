@@ -1,0 +1,161 @@
+<form action="/" method="GET">
+	<input type="search" name="search" value="{{search}}" placeholder="Search for projects">
+	<button type="submit">Search</button>
+</form>
+{{#if projects.length}}
+	<ul class="list-group">
+		{{#each projects}}
+			<li class="list-group-item">
+				<details>
+					<summary>
+						<a href="/pages/{{pathWithNamespace}}" target="_blank" rel="noreferrer nofollow" title="Open page for {{pathWithNamespace}}">
+							{{#if avatarUrl}}
+								<img width="50" height="50" src="{{avatarUrl}}" alt="Avatar for project {{pathWithNamespace}}"/>
+							{{else}}
+								<div class="avatar-fallback"></div>
+							{{/if}}
+							{{pathWithNamespace}}
+						</a>
+						{{#if time}}
+							<div>
+								<svg class="i"><use xlink:href="#i-activity"/></svg>
+								<time datetime="{{time}}">{{timeName}}</time>
+							</div>
+						{{/if}}
+						<form method="POST" action="/pages/{{id}}">
+							<input type="hidden" name="search" value="{{../../search}}"/>
+							<input type="hidden" name="page" value="{{../../page}}"/>
+							{{#if enabled}}
+								<input type="hidden" name="enabled" value="false"/>
+								{{#if permitted}}
+									<button title="Disable gitlab-pages for {{pathWithNamespace}}" type="submit">
+										<svg class="i"><use xlink:href="#i-pause"/></svg>
+										Disable
+									</button>
+								{{else}}
+									<button title="You need master access to {{pathWithNamespace}} to disable syncing" type="submit" disabled>
+										<svg class="i"><use xlink:href="#i-alert"/></svg>
+										Disable
+									</button>
+								{{/if}}
+							{{else}}
+								<input type="hidden" name="enabled" value="true"/>
+								{{#if permitted}}
+									<button title="Enable gitlab-pages for {{pathWithNamespace}}" type="submit">
+										<svg class="i"><use xlink:href="#i-play"/></svg>
+										Enable
+									</button>
+								{{else}}
+									<button title="You need master access to {{pathWithNamespace}} to enable syncing" type="submit" disabled>
+										<svg class="i"><use xlink:href="#i-alert"/></svg>
+										Enable
+									</button>
+								{{/if}}
+							{{/if}}
+						</form>
+					</summary>
+					<div>
+						<p>{{description}}</p>
+						<div>
+							{{#if branch}}
+								<div>
+									<svg class="i"><use xlink:href="#i-archive"/></svg>
+									<span>{{branch}}</span>
+								</div>
+							{{/if}}
+							{{#if sha}}
+								<div>
+									<svg class="i"><use xlink:href="#i-code"/></svg>
+									<span>{{sha}}</span>
+								</div>
+							{{/if}}
+							{{#if message}}
+								<div>
+									<svg class="i"><use xlink:href="#i-mail"/></svg>
+									<span>{{message}}</span>
+								</div>
+							{{/if}}
+							{{#if username}}
+								<a href={{userUrl}} target="_blank" rel="nofollow">
+									<svg class="i"><use xlink:href="#i-user"/></svg>
+									{{username}}
+								</a>
+							{{/if}}
+						</div>
+						<ul>
+							{{#if available}}
+							<li>
+								<form method="POST" action="/pages/{{id}}">
+									<input type="hidden" name="search" value="{{../../../search}}"/>
+									<input type="hidden" name="page" value="{{../../../page}}"/>
+									<input type="hidden" name="enabled" value="true"/>
+									<input type="hidden" name="reload" value="true"/>
+									<button title="Reload gitlab-pages for {{pathWithNamespace}}" type="submit">
+										<svg class="i"><use xlink:href="#i-reload"/></svg>
+										Reload
+									</button>
+								</form>
+							</li>
+							{{/if}}
+						</ul>
+						<ul>
+							{{#if available}}
+								<li>
+									<a href="/pages/{{pathWithNamespace}}" target="_blank" rel="noreferrer nofollow" title="Open page for {{pathWithNamespace}}">
+										<svg class="i"><use xlink:href="#i-external"/></svg>
+										Page
+									</a>
+								</li>
+							{{/if}}
+							<li>
+								<a href="{{webUrl}}" target="_blank" rel="noreferrer nofollow" title="Open project {{pathWithNamespace}} on GitLab">
+									<svg class="i"><use xlink:href="#i-code"/></svg>
+									GitLab
+								</a>
+							</li>
+						</ul>
+					</div>
+				</detail>
+			</li>
+		{{/each}}
+		{{#if pages.length}}
+			<nav>
+				<form method="GET" action="/{{previous}}">
+					{{#if previous}}
+						<button type="submit" title="Show previous page">
+							Previous
+						</button>
+					{{else}}
+						<button type="submit" title="Show previous page" disabled>
+							Previous
+						</button>
+					{{/if}}
+				</form>
+				<ul>
+					{{#each pages}}
+					<li>
+						<a title="Show projects on page {{label}}" href="/{{page}}?search={{../search}}">
+							{{label}}
+						</a>
+					</li>
+					{{/each}}
+				</ul>
+				<form method="GET" action="/{{next}}">
+					{{#if next}}
+						<button type="submit" title="Show next page">
+							Next
+						</button>
+					{{else}}
+						<button type="submit" title="Show next page" disabled>
+							Next
+						</button>
+					{{/if}}
+				</form>
+			</nav>
+		{{/if}}
+	</ul>
+{{else}}
+	<div>
+		No projects.
+	</div>
+{{/if}}
