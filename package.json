@@ -9,7 +9,7 @@
     "lint": "xo",
     "deps": "dependency-check . && dependency-check . --extra --no-dev -i bootstrap -i jade",
     "start": "./cli.js",
-    "tunnel": "lt --p 3000 --s glpages -h https://localtunnel.me",
+    "tunnel": "lt --p 3000 --s gitlabpages -h https://localtunnel.me",
     "test": "npm run lint && npm run deps"
   },
   "repository": {

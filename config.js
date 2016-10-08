@@ -5,7 +5,6 @@ require('dotenv').config();
 const required = [
 	['url', 'GITLAB_URL'],
 	['secret', 'SECRET'],
-	['deployBranch', 'DEPLOY_BRANCH'],
 	['publicPagesDir', 'PUBLIC_PAGES_DIR'],
 	['publicUrl', 'PUBLIC_URL'],
 	['sshPublicKey', 'SSH_PUBLIC_KEY'],

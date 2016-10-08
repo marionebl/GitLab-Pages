@@ -1,3 +1,4 @@
+const fs = require('fs');
 const path = require('path');
 const querystring = require('querystring');
 const url = require('url');
@@ -35,15 +36,19 @@ const oAuthOptions = {
 	callbackURL,
 	baseURL: config.url
 };
+
+const css = fs.readFileSync('./app.css');
 const oauthClient = oauth(oAuthOptions, db);
 
+router.get('/app.css', (req, res) => {
+	res.type('css');
+	res.send(css);
+});
+
 router.get('/login', (req, res) => {
-	if (req.session.user && req.session.token) {
-		return res.redirect('/');
-	}
-	const params = req.query.params;
+	const path = req.query.path;
 	const query = req.query.query;
-	res.render('login', {title, params, query, target, targetName});
+	res.render('login', {title, path, query, target, targetName});
 });
 
 router.get('/logout', (req, res) => {
@@ -57,7 +62,7 @@ router.post('/logout', (req, res) => {
 });
 
 router.get('/oauth2/authorize', (req, res, next) => {
-	const payload = JSON.stringify({params: req.query.params, query: req.query.query});
+	const payload = JSON.stringify({path: req.query.path, query: req.query.query});
 	const state = new Buffer(payload).toString('base64');
 	return oauthClient.authenticate('gitlab', {state})(req, res, next);
 });
@@ -65,7 +70,6 @@ router.get('/oauth2/authorize', (req, res, next) => {
 router.get('/oauth2/callback', (req, res, next) => {
 	const options = {failureRedirect: '/login'};
 	const queryState = JSON.parse(new Buffer(req.query.state, 'base64').toString('utf-8')) || {};
-	const id = (JSON.parse(queryState.params || '{}')).id || '';
 	const queryString = querystring.stringify(JSON.parse(queryState.query || '{}'));
 
 	const onAuth = (error, data) => {
@@ -74,24 +78,17 @@ router.get('/oauth2/callback', (req, res, next) => {
 		}
 		req.session.token = data.accessToken;
 		req.session.user = data.profile.id;
-		res.redirect(`/${id}?${queryString}`);
+		res.redirect(`${queryState.path}?${queryString}`);
 	};
 	const authenticate = oauthClient.authenticate('gitlab', options, onAuth);
 	return authenticate(req, res, next);
 });
 
 router.get('/pages/:id', (req, res) => {
-	if (!req.session.user || !req.session.token) {
-		return res.redirect(`/login`);
-	}
 	return res.redirect('/');
 });
 
 router.post('/pages/:id', (req, res, next) => {
-	if (!req.session.user || !req.session.token) {
-		return res.redirect(`/login`);
-	}
-
 	const client = getClient(req.session.token);
 	const ctx = {pagesDir: pubDir, hookUrl, user: req.session.user};
 
@@ -178,11 +175,6 @@ router.post('/hook', (req, res, next) => {
 });
 
 router.get('/:pageCount?', (req, res, next) => {
-	if (!req.session.user || !req.session.token) {
-		const query = querystring.stringify({params: JSON.stringify(req.params), query: JSON.stringify(req.query)});
-		return res.redirect(`/login?${query}`);
-	}
-
 	if (req.params.pageCount && isNaN(Number(req.params.pageCount))) {
 		return res.redirect('/');
 	}
